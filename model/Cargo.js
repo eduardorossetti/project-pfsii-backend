@@ -15,10 +15,6 @@ export default class Cargo {
     return this.#codigo;
   }
 
-  set codigo(novoCodigo) {
-    this.#codigo = novoCodigo;
-  }
-
   get nome() {
     return this.#nome;
   }
@@ -45,7 +41,8 @@ export default class Cargo {
 
   async gravar() {
     const cargoBD = new CargoBD();
-    await cargoBD.gravar(this);
+    const lastInsertedId = await cargoBD.gravar(this);
+    return lastInsertedId;
   }
 
   async atualizar() {

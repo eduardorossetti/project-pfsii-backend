@@ -7,28 +7,72 @@ export default class CargoBD {
   async gravar(cargo) {
     if (cargo instanceof Cargo) {
       const conexao = await conectar();
+      let conn = null;
+      let lastInsertedId = null;
 
-      const sql = "INSERT INTO cargo(nome,descricao) VALUES (?,?)";
-      const parametros = [cargo.nome, cargo.descricao];
-      await conexao.query(sql, parametros);
+      try {
+        conn = await conexao.getConnection();
+        await conn.beginTransaction();
+
+        const [response, meta] = await conn.query(
+          "INSERT INTO cargo(nome,descricao) VALUES (?,?)",
+          [cargo.nome, cargo.descricao]
+        );
+
+        await conn.commit();
+
+        lastInsertedId = response.insertId;
+      } catch (error) {
+        if (conn) await conn.rollback();
+        throw error;
+      } finally {
+        if (conn) conn.release();
+        return lastInsertedId;
+      }
     }
   }
 
   async alterar(cargo) {
     if (cargo instanceof Cargo) {
       const conexao = await conectar();
+      let conn = null;
 
-      const sql = "UPDATE cargo SET nome=?, descricao=? WHERE codigo=?";
-      const parametros = [cargo.nome, cargo.descricao, cargo.codigo];
-      await conexao.query(sql, parametros);
+      try {
+        conn = await conexao.getConnection();
+        await conn.beginTransaction();
+
+        await conn.query(
+          "UPDATE cargo SET nome=?, descricao=? WHERE codigo=?",
+          [cargo.nome, cargo.descricao, cargo.codigo]
+        );
+
+        await conn.commit();
+      } catch (error) {
+        if (conn) await conn.rollback();
+        throw error;
+      } finally {
+        if (conn) conn.release();
+      }
     }
   }
 
   async excluir(cargo) {
     if (cargo instanceof Cargo) {
       const conexao = await conectar();
-      const sql = "DELETE FROM cargo WHERE codigo=?";
-      await conexao.query(sql, cargo.codigo);
+      let conn = null;
+
+      try {
+        conn = await conexao.getConnection();
+        await conn.beginTransaction();
+
+        await conn.query("DELETE FROM cargo WHERE codigo=?", cargo.codigo);
+        await conn.commit();
+      } catch (error) {
+        if (conn) await conn.rollback();
+        throw error;
+      } finally {
+        if (conn) conn.release();
+      }
     }
   }
 
@@ -36,13 +80,13 @@ export default class CargoBD {
     const conexao = await conectar();
 
     const sql = "SELECT * FROM cargo ORDER BY nome";
-    const [response] = await conexao.query(sql);
+    const [rows] = await conexao.query(sql);
 
-    const listaCargo = [];
-    for (const row of response) {
+    const cargos = [];
+    for (const row of rows) {
       const cargo = new Cargo(row["codigo"], row["nome"], row["descricao"]);
-      listaCargo.push(cargo);
+      cargos.push(cargo);
     }
-    return listaCargo;
+    return cargos;
   }
 }
