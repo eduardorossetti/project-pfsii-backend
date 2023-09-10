@@ -1,17 +1,19 @@
 {
-  "name": "pid",
+  "name": "pi-atividade2",
   "version": "1.0.0",
-  "description": "Desenvolvimento do PID",
+  "description": "Desenvolvimento das camadas de modelo e persistência para a atividade 2 de Programação para Internet.",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "start": "node index",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "nodemon --inspect index.js"
   },
   "keywords": [
     "backend",
     "modelo",
     "persistencia",
+    "atividade2",
     "programacaoInternet"
   ],
   "author": "Vinicius S Alves",
@@ -19,7 +21,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "mysql2": "^3.6.1",
+    "mysql2": "^3.6.0",
     "nodemon": "^2.0.22"
   }
 }

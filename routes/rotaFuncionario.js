@@ -1,5 +1,5 @@
 import { Router } from "express";
-import FuncionarioCTRL from "../controllers/funcionarioController.js";
+import FuncionarioCTRL from "../controller/FuncionarioCtrl.js";
 
 const rotaFuncionario = new Router();
 const funcionarioCtrl = new FuncionarioCTRL();

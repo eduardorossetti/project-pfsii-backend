@@ -6,17 +6,7 @@ import cors from "cors";
 const app = express();
 
 app.use(express.json());
-app.use(
-  cors({
-    origin: "*",
-    allowedHeaders: [
-      "Accept-Version",
-      "Authorization",
-      "Credentials",
-      "Content-Type",
-    ],
-  })
-);
+app.use(cors({ origin: "*" }));
 
 // Configurar a aplicação para aceitar objetos aninhados
 app.use(express.urlencoded({ extended: false }));

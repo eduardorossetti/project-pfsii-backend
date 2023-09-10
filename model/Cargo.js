@@ -1,4 +1,4 @@
-import CargoBD from "../data/cargoRepository.js";
+import CargoBD from "../database/CargoBD.js";
 
 export default class Cargo {
   #codigo;
@@ -13,6 +13,10 @@ export default class Cargo {
 
   get codigo() {
     return this.#codigo;
+  }
+
+  set codigo(novoCodigo) {
+    this.#codigo = novoCodigo;
   }
 
   get nome() {
@@ -41,8 +45,7 @@ export default class Cargo {
 
   async gravar() {
     const cargoBD = new CargoBD();
-    const lastInsertedId = await cargoBD.gravar(this);
-    return lastInsertedId;
+    await cargoBD.gravar(this);
   }
 
   async atualizar() {

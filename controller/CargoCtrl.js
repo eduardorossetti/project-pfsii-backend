@@ -1,4 +1,4 @@
-import Cargo from "../models/cargoModel.js";
+import Cargo from "../model/Cargo.js";
 
 export default class CargoCTRL {
   gravar(req, res) {
@@ -10,32 +10,30 @@ export default class CargoCTRL {
 
       if (nome && descricao) {
         const cargo = new Cargo("", nome, descricao);
-        
         cargo
           .gravar()
-          .then((lastInsertedId) => {
+          .then(() => {
             res.status(200).json({
               status: true,
-              message: "Dados gravados com sucesso!",
-              id: lastInsertedId,
+              mensagem: "Dados gravados com sucesso!",
             });
           })
           .catch((erro) => {
             res.status(500).json({
               status: false,
-              message: erro.message,
+              mensagem: erro.message,
             });
           });
       } else {
         res.status(400).json({
           status: false,
-          message: "Dados insuficientes! Consulte a documentação da API.",
+          mensagem: "Dados insuficientes! Consulte a documentação da API.",
         });
       }
     } else {
       res.status(400).json({
         status: false,
-        message:
+        mensagem:
           "Método não permitido ou Cargo no formato JSON não fornecido! Consulte a documentação da API.",
       });
     }
@@ -56,25 +54,25 @@ export default class CargoCTRL {
           .then(() => {
             res.status(200).json({
               status: true,
-              message: "Dados atualizados com sucesso!",
+              mensagem: "Dados atualizados com sucesso!",
             });
           })
           .catch((erro) => {
             res.status(500).json({
               status: false,
-              message: erro.message,
+              mensagem: erro.message,
             });
           });
       } else {
         res.status(400).json({
           status: false,
-          message: "Dados insuficientes! Consulte a documentação da API.",
+          mensagem: "Dados insuficientes! Consulte a documentação da API.",
         });
       }
     } else {
       res.status(400).json({
         status: false,
-        message:
+        mensagem:
           "Método não permitido ou Cargo no formato JSON não fornecido! Consulte a documentação da API.",
       });
     }
@@ -90,13 +88,13 @@ export default class CargoCTRL {
       .then(() => {
         res.status(200).json({
           status: true,
-          message: "Dados excluídos com sucesso!",
+          mensagem: "Dados excluídos com sucesso!",
         });
       })
       .catch((erro) => {
         res.status(500).json({
           status: false,
-          message: erro.message,
+          mensagem: erro.message,
         });
       });
   }
@@ -113,13 +111,13 @@ export default class CargoCTRL {
         .catch((erro) => {
           res.status(500).json({
             status: false,
-            message: erro.message,
+            mensagem: erro.message,
           });
         });
     } else {
       res.status(400).json({
         status: false,
-        message: "Método não permitido! Consulte a documentação da API.",
+        mensagem: "Método não permitido! Consulte a documentação da API.",
       });
     }
   }

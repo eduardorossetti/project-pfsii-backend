@@ -1,14 +1,14 @@
-import FuncionarioBD from "../data/funcionarioRepository.js";
+import FuncionarioBD from "../database/FuncionarioBD.js";
 
 export default class Funcionario {
   #codigo;
   #cpf;
-  #dataNascimento;
-  #dataAdmissao;
-  #dataDemissao;
+  #dt_nasc;
+  #dt_admissao;
+  #dt_demissao;
   #status;
-  #nomeUsuario;
-  #senhaUsuario;
+  #nome_usuario;
+  #senha_usuario;
   #cargo;
   #nome;
   #telefone;
@@ -21,15 +21,15 @@ export default class Funcionario {
 
   constructor(
     codigo,
-    nome,
     cpf,
-    dataNascimento,
-    dataAdmissao,
-    dataDemissao,
+    dt_nasc,
+    dt_admissao,
+    dt_demissao,
     status,
-    nomeUsuario,
-    senhaUsuario,
+    nome_usuario,
+    senha_usuario,
     cargo,
+    nome,
     telefone,
     email,
     endereco,
@@ -39,15 +39,15 @@ export default class Funcionario {
     uf
   ) {
     this.#codigo = codigo;
-    this.#nome = nome;
     this.#cpf = cpf;
-    this.#dataNascimento = dataNascimento;
-    this.#dataAdmissao = dataAdmissao;
-    this.#dataDemissao = dataDemissao;
+    this.#dt_nasc = dt_nasc;
+    this.#dt_admissao = dt_admissao;
+    this.#dt_demissao = dt_demissao;
     this.#status = status;
-    this.#nomeUsuario = nomeUsuario;
-    this.#senhaUsuario = senhaUsuario;
+    this.#nome_usuario = nome_usuario;
+    this.#senha_usuario = senha_usuario;
     this.#cargo = cargo;
+    this.#nome = nome;
     this.#telefone = telefone;
     this.#email = email;
     this.#endereco = endereco;
@@ -61,6 +61,10 @@ export default class Funcionario {
     return this.#codigo;
   }
 
+  set codigo(novoCodigo) {
+    this.#codigo = novoCodigo;
+  }
+
   get cpf() {
     return this.#cpf;
   }
@@ -68,28 +72,28 @@ export default class Funcionario {
     this.#cpf = novoCpf;
   }
 
-  get dataNascimento() {
-    return this.#dataNascimento;
+  get dt_nasc() {
+    return this.#dt_nasc;
   }
 
-  set dataNascimento(novoDataNascimento) {
-    this.#dataNascimento = novoDataNascimento;
+  set dt_nasc(novoDt_nasc) {
+    this.#dt_nasc = novoDt_nasc;
   }
 
-  get dataAdmissao() {
-    return this.#dataAdmissao;
+  get dt_admissao() {
+    return this.#dt_admissao;
   }
 
-  set dataAdmissao(novoDataAdmissao) {
-    this.#dataAdmissao = novoDataAdmissao;
+  set dt_admissao(novoDt_admissao) {
+    this.#dt_admissao = novoDt_admissao;
   }
 
-  get dataDemissao() {
-    return this.#dataDemissao;
+  get dt_demissao() {
+    return this.#dt_demissao;
   }
 
-  set dataDemissao(novoDataDemissao) {
-    this.#dataDemissao = novoDataDemissao;
+  set dt_demissao(novoDt_demissao) {
+    this.#dt_demissao = novoDt_demissao;
   }
 
   get status() {
@@ -100,20 +104,20 @@ export default class Funcionario {
     this.#status = novoStatus;
   }
 
-  get nomeUsuario() {
-    return this.#nomeUsuario;
+  get nome_usuario() {
+    return this.#nome_usuario;
   }
 
-  set nomeUsuario(novoNomeUsuario) {
-    this.#nomeUsuario = novoNomeUsuario;
+  set nome_usuario(novoNome_usuario) {
+    this.#nome_usuario = novoNome_usuario;
   }
 
-  get senhaUsuario() {
-    return this.#senhaUsuario;
+  get senha_usuario() {
+    return this.#senha_usuario;
   }
 
-  set senhaUsuario(novoSenhaUsuario) {
-    this.#senhaUsuario = novoSenhaUsuario;
+  set senha_usuario(novoSenha_usuario) {
+    this.#senha_usuario = novoSenha_usuario;
   }
 
   get cargo() {
@@ -192,12 +196,12 @@ export default class Funcionario {
     return {
       codigo: this.#codigo,
       cpf: this.#cpf,
-      dataNascimento: this.#dataNascimento,
-      dataAdmissao: this.#dataAdmissao,
-      dataDemissao: this.#dataDemissao,
+      dt_nasc: this.#dt_nasc,
+      dt_admissao: this.#dt_admissao,
+      dt_demissao: this.#dt_demissao,
       status: this.#status,
-      nomeUsuario: this.#nomeUsuario,
-      senhaUsuario: this.#senhaUsuario,
+      nome_usuario: this.#nome_usuario,
+      senha_usuario: this.#senha_usuario,
       cargo: this.#cargo,
       nome: this.#nome,
       telefone: this.#telefone,
@@ -212,8 +216,7 @@ export default class Funcionario {
 
   async gravar() {
     const funcionarioBD = new FuncionarioBD();
-    const lastInsertedId = await funcionarioBD.gravar(this);
-    return lastInsertedId;
+    await funcionarioBD.gravar(this);
   }
 
   async atualizar() {

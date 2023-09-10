@@ -1,6 +1,5 @@
-import Funcionario from "../models/funcionarioModel.js";
+import Funcionario from "../model/Funcionario.js";
 import conectar from "./Conexao.js";
-import Cargo from "../models/cargoModel.js";
 
 export default class FuncionarioBD {
   constructor() {}
@@ -9,7 +8,6 @@ export default class FuncionarioBD {
     if (funcionario instanceof Funcionario) {
       const conexao = await conectar();
       let conn = null;
-      let lastInsertedId = null;
 
       try {
         conn = await conexao.getConnection();
@@ -28,31 +26,27 @@ export default class FuncionarioBD {
             funcionario.uf,
           ]
         );
-        const [response1, meta1] = await conn.query(
+        await conn.query(
           "INSERT INTO funcionario (cpf,dt_nasc,dt_admissao,dt_demissao,status,nome_usuario,\
             senha_usuario,cargo_codigo,Pessoa_codigo) VALUES (?,?,?,?,?,?,?,?,?)",
           [
             funcionario.cpf,
-            funcionario.dataNascimento,
-            funcionario.dataAdmissao,
-            funcionario.dataDemissao,
+            funcionario.dt_nasc,
+            funcionario.dt_admissao,
+            funcionario.dt_demissao,
             funcionario.status,
-            funcionario.nomeUsuario,
-            funcionario.senhaUsuario,
-            funcionario.cargo.codigo,
+            funcionario.nome_usuario,
+            funcionario.senha_usuario,
+            funcionario.cargo,
             response.insertId,
           ]
         );
-
         await conn.commit();
-
-        lastInsertedId = response1.insertId;
       } catch (error) {
         if (conn) await conn.rollback();
         throw error;
       } finally {
         if (conn) conn.release();
-        return lastInsertedId;
       }
     }
   }
@@ -65,12 +59,6 @@ export default class FuncionarioBD {
       try {
         conn = await conexao.getConnection();
         await conn.beginTransaction();
-
-        const [response, meta] = await conn.query(
-          "SELECT Pessoa_codigo FROM funcionario WHERE codigo=?",
-          funcionario.codigo
-        );
-
         await conn.query(
           "UPDATE pessoa SET nome=?, telefone=?, email=?, endereco=?, bairro=?, cidade=?,\
           cep=?, uf=? WHERE codigo=?",
@@ -83,21 +71,21 @@ export default class FuncionarioBD {
             funcionario.cidade,
             funcionario.cep,
             funcionario.uf,
-            response[0].Pessoa_codigo,
+            funcionario.codigo,
           ]
         );
         await conn.query(
           "UPDATE funcionario SET cpf=?,dt_nasc=?,dt_admissao=?\
-          ,dt_demissao=?,status=?,nome_usuario=?,senha_usuario=?,cargo_codigo=? WHERE codigo=?",
+          ,dt_demissao=?,status=?,nome_usuario=?,senha_usuario=?,cargo_codigo=? WHERE Pessoa_codigo=?",
           [
             funcionario.cpf,
-            funcionario.dataNascimento,
-            funcionario.dataAdmissao,
-            funcionario.dataDemissao,
+            funcionario.dt_nasc,
+            funcionario.dt_admissao,
+            funcionario.dt_demissao,
             funcionario.status,
-            funcionario.nomeUsuario,
-            funcionario.senhaUsuario,
-            funcionario.cargo.codigo,
+            funcionario.nome_usuario,
+            funcionario.senha_usuario,
+            funcionario.cargo,
             funcionario.codigo,
           ]
         );
@@ -119,20 +107,14 @@ export default class FuncionarioBD {
       try {
         conn = await conexao.getConnection();
         await conn.beginTransaction();
-
-        const [response, meta] = await conn.query(
-          "SELECT Pessoa_codigo FROM funcionario WHERE codigo=?",
-          funcionario.codigo
-        );
-
         await conn.query(
-          "DELETE FROM funcionario WHERE codigo=?",
+          "DELETE FROM funcionario WHERE Pessoa_codigo=?",
           funcionario.codigo
         );
 
         await conn.query(
           "DELETE FROM pessoa WHERE codigo=?",
-          response[0].Pessoa_codigo
+          funcionario.codigo
         );
 
         await conn.commit();
@@ -149,7 +131,7 @@ export default class FuncionarioBD {
     const conexao = await conectar();
 
     const sql =
-      "select f.codigo, p.nome, p.telefone, p.email, p.endereco, p.bairro, \
+      "select p.codigo, p.nome, p.telefone, p.email, p.endereco, p.bairro, \
       p.cidade, p.cep, p.uf, f.cpf, f.dt_nasc, f.dt_admissao, f.dt_demissao, \
       f.status, f.nome_usuario, f.senha_usuario, f.Cargo_codigo, c.nome as cargo_nome \
       from pessoa p \
@@ -159,41 +141,39 @@ export default class FuncionarioBD {
       ON c.codigo = f.Cargo_codigo \
       ORDER BY p.nome";
     const [response] = await conexao.query(sql);
-
-    const funcionarios = [];
-
-    for (const row of response) {
-      const cargo = new Cargo(row["Cargo_codigo"], row["cargo_nome"]);
-
-      const funcionario = new Funcionario(
-        row["codigo"],
-        row["nome"],
-        row["cpf"],
-        row["dt_nasc"],
-        row["dt_admissao"],
-        row["dt_demissao"],
-        row["status"],
-        row["nome_usuario"],
-        row["senha_usuario"],
-        cargo,
-        row["telefone"],
-        row["email"],
-        row["endereco"],
-        row["bairro"],
-        row["cidade"],
-        row["cep"],
-        row["uf"]
-      );
-      funcionarios.push(funcionario);
-    }
-    return funcionarios;
+    return response;
+    // const listaFuncionario = [];
+    // for (const row of rows) {
+    //   const funcionario = new Funcionario(
+    //     row["codigo"],
+    //     row["cpf"],
+    //     row["dt_nasc"],
+    //     row["dt_admissao"],
+    //     row["dt_demissao"],
+    //     row["status"],
+    //     row["nome_usuario"],
+    //     row["senha_usuario"],
+    //     row["cargo"],
+    //     row["nome"],
+    //     row["telefone"],
+    //     row["email"],
+    //     row["endereco"],
+    //     row["bairro"],
+    //     row["cidade"],
+    //     row["cep"],
+    //     row["uf"],
+    //     row[""]
+    //   );
+    //   listaFuncionario.push(funcionario);
+    // }
+    // return listaFuncionario;
   }
 
   async consultarCargo(termo) {
     const conexao = await conectar();
 
     const sql =
-      "select f.codigo, p.nome, p.telefone, p.email, p.endereco, p.bairro, \
+      "select p.codigo, p.nome, p.telefone, p.email, p.endereco, p.bairro, \
       p.cidade, p.cep, p.uf, f.codigo as codigo_funcionario, f.cpf, f.dt_nasc, f.dt_admissao, f.dt_demissao, \
       f.status, f.nome_usuario, f.senha_usuario, f.Cargo_codigo, c.nome as cargo_nome \
       from pessoa p \

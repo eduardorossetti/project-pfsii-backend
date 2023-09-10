@@ -1,55 +1,55 @@
-import Funcionario from "../models/funcionarioModel.js";
+import Funcionario from "../model/Funcionario.js";
 
 export default class FuncionarioCTRL {
   gravar(req, res) {
     res.type("application/json");
     if (req.method === "POST" && req.is("application/json")) {
       const dados = req.body;
-      const bairro = dados.bairro;
-      const cargo = dados.cargo;
-      const cep = dados.cep;
-      const cidade = dados.cidade;
       const cpf = dados.cpf;
-      const dataAdmissao = dados.dataAdmissao;
-      const dataDemissao = dados.dataDemissao;
-      const dataNascimento = dados.dataNascimento;
+      const dt_nasc = dados.dt_nasc;
+      const dt_admissao = dados.dt_admissao;
+      const dt_demissao = dados?.dt_demissao;
+      const status = dados.status;
+      const nome_usuario = dados.nome_usuario;
+      const senha_usuario = dados.senha_usuario;
+      const cargo = dados.cargo;
+      const nome = dados.nome;
+      const telefone = dados.telefone;
       const email = dados.email;
       const endereco = dados.endereco;
-      const nome = dados.nome;
-      const nomeUsuario = dados.nomeUsuario;
-      const senhaUsuario = dados.senhaUsuario;
-      const status = dados.status;
-      const telefone = dados.telefone;
+      const bairro = dados.bairro;
+      const cidade = dados.cidade;
+      const cep = dados.cep;
       const uf = dados.uf;
 
       if (
-        bairro &&
-        cargo &&
-        cep &&
-        cidade &&
         cpf &&
-        dataAdmissao &&
-        dataNascimento &&
+        dt_nasc &&
+        dt_admissao &&
+        status &&
+        nome_usuario &&
+        senha_usuario &&
+        cargo &&
+        nome &&
+        telefone &&
         email &&
         endereco &&
-        nome &&
-        nomeUsuario &&
-        senhaUsuario &&
-        status &&
-        telefone &&
+        bairro &&
+        cidade &&
+        cep &&
         uf
       ) {
         const funcionario = new Funcionario(
-          0,
-          nome,
+          null,
           cpf,
-          dataNascimento,
-          dataAdmissao,
-          dataDemissao,
+          dt_nasc,
+          dt_admissao,
+          dt_demissao,
           status,
-          nomeUsuario,
-          senhaUsuario,
+          nome_usuario,
+          senha_usuario,
           cargo,
+          nome,
           telefone,
           email,
           endereco,
@@ -61,29 +61,28 @@ export default class FuncionarioCTRL {
 
         funcionario
           .gravar()
-          .then((lastInsertedId) => {
+          .then(() => {
             res.status(200).json({
               status: true,
-              message: "Dados gravados com sucesso!",
-              id: lastInsertedId,
+              mensagem: "Dados gravados com sucesso!",
             });
           })
           .catch((erro) => {
             res.status(500).json({
               status: false,
-              message: erro.message,
+              mensagem: erro.message,
             });
           });
       } else {
         res.status(400).json({
           status: false,
-          message: "Dados insuficientes! Consulte a documentação da API.",
+          mensagem: "Dados insuficientes! Consulte a documentação da API.",
         });
       }
     } else {
       res.status(400).json({
         status: false,
-        message:
+        mensagem:
           "Método não permitido ou Funcionario no formato JSON não fornecido! Consulte a documentação da API.",
       });
     }
@@ -93,52 +92,52 @@ export default class FuncionarioCTRL {
     res.type("application/json");
     if (req.method === "PUT" && req.is("application/json")) {
       const dados = req.body;
-      const bairro = dados.bairro;
-      const cargo = dados.cargo;
-      const cep = dados.cep;
-      const cidade = dados.cidade;
       const codigo = dados.codigo;
       const cpf = dados.cpf;
-      const dataAdmissao = dados.dataAdmissao;
-      const dataDemissao = dados.dataDemissao;
-      const dataNascimento = dados.dataNascimento;
+      const dt_nasc = dados.dt_nasc;
+      const dt_admissao = dados.dt_admissao;
+      const dt_demissao = dados?.dt_demissao;
+      const status = dados.status;
+      const nome_usuario = dados.nome_usuario;
+      const senha_usuario = dados.senha_usuario;
+      const cargo = dados.cargo;
+      const nome = dados.nome;
+      const telefone = dados.telefone;
       const email = dados.email;
       const endereco = dados.endereco;
-      const nome = dados.nome;
-      const nomeUsuario = dados.nomeUsuario;
-      const senhaUsuario = dados.senhaUsuario;
-      const status = dados.status;
-      const telefone = dados.telefone;
+      const bairro = dados.bairro;
+      const cidade = dados.cidade;
+      const cep = dados.cep;
       const uf = dados.uf;
       if (
-        bairro &&
-        cargo &&
-        cep &&
-        cidade &&
         codigo &&
         cpf &&
-        dataAdmissao &&
-        dataNascimento &&
+        dt_nasc &&
+        dt_admissao &&
+        status &&
+        nome_usuario &&
+        senha_usuario &&
+        cargo &&
+        nome &&
+        telefone &&
         email &&
         endereco &&
-        nome &&
-        nomeUsuario &&
-        senhaUsuario &&
-        status &&
-        telefone &&
+        bairro &&
+        cidade &&
+        cep &&
         uf
       ) {
         const funcionario = new Funcionario(
           codigo,
-          nome,
           cpf,
-          dataNascimento,
-          dataAdmissao,
-          dataDemissao,
+          dt_nasc,
+          dt_admissao,
+          dt_demissao,
           status,
-          nomeUsuario,
-          senhaUsuario,
+          nome_usuario,
+          senha_usuario,
           cargo,
+          nome,
           telefone,
           email,
           endereco,
@@ -152,25 +151,25 @@ export default class FuncionarioCTRL {
           .then(() => {
             res.status(200).json({
               status: true,
-              message: "Dados atualizados com sucesso!",
+              mensagem: "Dados atualizados com sucesso!",
             });
           })
           .catch((erro) => {
             res.status(500).json({
               status: false,
-              message: erro.message,
+              mensagem: erro.message,
             });
           });
       } else {
         res.status(400).json({
           status: false,
-          message: "Dados insuficientes! Consulte a documentação da API.",
+          mensagem: "Dados insuficientes! Consulte a documentação da API.",
         });
       }
     } else {
       res.status(400).json({
         status: false,
-        message:
+        mensagem:
           "Método não permitido ou Funcionário no formato JSON não fornecido! Consulte a documentação da API",
       });
     }
@@ -184,13 +183,13 @@ export default class FuncionarioCTRL {
       .then(() => {
         res.status(200).json({
           status: true,
-          message: "Dados excluídos com sucesso!",
+          mensagem: "Dados excluídos com sucesso!",
         });
       })
       .catch((erro) => {
         res.status(500).json({
           status: false,
-          message: erro.message,
+          mensagem: erro.message,
         });
       });
   }
@@ -207,17 +206,17 @@ export default class FuncionarioCTRL {
         .catch((erro) => {
           res.status(500).json({
             status: false,
-            message: erro.message,
+            mensagem: erro.message,
           });
         });
     } else {
       res.status(400).json({
         status: false,
-        message: "Método não permitido! Consulte a documentação da API",
+        mensagem: "Método não permitido! Consulte a documentação da API",
       });
     }
   }
-
+  
   consultarCargo(req, res) {
     res.type("application/json");
     if (req.method === "GET") {
@@ -232,13 +231,13 @@ export default class FuncionarioCTRL {
         .catch((erro) => {
           res.status(500).json({
             status: false,
-            message: erro.message,
+            mensagem: erro.message,
           });
         });
     } else {
       res.status(400).json({
         status: false,
-        message: "Método não permitido! Consulte a documentação da API",
+        mensagem: "Método não permitido! Consulte a documentação da API",
       });
     }
   }
