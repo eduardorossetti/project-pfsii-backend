@@ -13,6 +13,14 @@ export default async function conectar() {
     dateStrings: "date",
   });
 
+  /*const conn = mysql.createPool({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "pfsii",
+    dateStrings: "date",
+  });*/
+
   global.conexao = conn;
   return conn;
 }

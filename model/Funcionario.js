@@ -18,6 +18,7 @@ export default class Funcionario {
   #cidade;
   #cep;
   #uf;
+  #atribuicoes;
 
   constructor(
     codigo,
@@ -188,6 +189,14 @@ export default class Funcionario {
     this.#uf = novoUf;
   }
 
+  get atribuicoes() {
+    return this.#atribuicoes;
+  }
+
+  set atribuicoes(novoAtribuicoes) {
+    this.#atribuicoes = novoAtribuicoes;
+  }
+
   toJSON() {
     return {
       codigo: this.#codigo,
@@ -198,7 +207,7 @@ export default class Funcionario {
       status: this.#status,
       nomeUsuario: this.#nomeUsuario,
       senhaUsuario: this.#senhaUsuario,
-      cargo: this.#cargo,
+      cargoPrincipal: this.#cargo,
       nome: this.#nome,
       telefone: this.#telefone,
       email: this.#email,
@@ -207,6 +216,7 @@ export default class Funcionario {
       cidade: this.#cidade,
       cep: this.#cep,
       uf: this.#uf,
+      atribuicoes: this.#atribuicoes,
     };
   }
 
@@ -232,9 +242,30 @@ export default class Funcionario {
     return funcionarios;
   }
 
-  async consultarCargo(termo) {
+  async obterFuncionario(codigo) {
     const funcionarioBD = new FuncionarioBD();
-    const funcionarios = await funcionarioBD.consultarCargo(termo);
+    const funcionarios = await funcionarioBD.obterFuncionario(codigo);
     return funcionarios;
+  }
+
+  async obterAtribuicoes() {
+    const funcionarioBD = new FuncionarioBD();
+    const atribuicoes = await funcionarioBD.obterAtribuicoes(this);
+    return atribuicoes;
+  }
+
+  async atribuir(atribuicoes) {
+    const funcionarioBD = new FuncionarioBD();
+    await funcionarioBD.atribuir(this, atribuicoes);
+  }
+
+  async atualizarAtribuicoes(atribuicoes) {
+    const funcionarioBD = new FuncionarioBD();
+    await funcionarioBD.atualizarAtribuicoes(this, atribuicoes);
+  }
+
+  async removerAtribuicao(atribuicao) {
+    const funcionarioBD = new FuncionarioBD();
+    await funcionarioBD.removerAtribuicao(this, atribuicao);
   }
 }

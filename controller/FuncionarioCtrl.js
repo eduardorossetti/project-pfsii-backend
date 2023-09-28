@@ -218,16 +218,15 @@ export default class FuncionarioCTRL {
     }
   }
 
-  consultarCargo(req, res) {
+  obterFuncionario(req, res) {
     res.type("application/json");
     if (req.method === "GET") {
-      const termo = req.params.termo;
-      const funcionario = new Funcionario();
-
+      const codigo = req.params.codigo;
+      const funcionario = new Funcionario(codigo);
       funcionario
-        .consultarCargo(termo)
-        .then((funcionarios) => {
-          res.status(200).json(funcionarios);
+        .obterFuncionario(codigo)
+        .then((funcionario) => {
+          res.status(200).json(funcionario);
         })
         .catch((erro) => {
           res.status(500).json({
@@ -240,6 +239,102 @@ export default class FuncionarioCTRL {
         status: false,
         message: "Método não permitido! Consulte a documentação da API",
       });
+    }
+  }
+
+  atribuir(req, res) {
+    res.type("application/json");
+    if (req.method === "POST") {
+      const codigoFuncionario = req.params.codigo;
+      const atribuicoes = req.body.atribuicoes;
+
+      if (codigoFuncionario && atribuicoes && atribuicoes.length > 0) {
+        const funcionario = new Funcionario(codigoFuncionario);
+        funcionario
+          .atribuir(atribuicoes)
+          .then(() => {
+            res.status(200).json({
+              status: true,
+              message: "Cargos atribuidos com sucesso!",
+            });
+          })
+          .catch((erro) => {
+            res.status(500).json({
+              status: false,
+              message: erro.message,
+            });
+          });
+      }
+    }
+  }
+
+  obterAtribuicoes(req, res) {
+    res.type("application/json");
+    if (req.method === "GET") {
+      const funcionario = new Funcionario(req.params.codigo);
+      funcionario
+        .obterAtribuicoes()
+        .then((atribuicoes) => {
+          res.status(200).json(atribuicoes);
+        })
+        .catch((erro) => {
+          res.status(500).json({
+            status: false,
+            message: erro.message,
+          });
+        });
+    }
+  }
+
+  atualizarAtribuicoes(req, res) {
+    res.type("application/json");
+    if (req.method === "PUT") {
+      const codigoFuncionario = req.params.codigo;
+      const atribuicoes = req.body.atribuicoes;
+
+      if (codigoFuncionario && atribuicoes && atribuicoes.length > 0) {
+        const funcionario = new Funcionario(codigoFuncionario);
+        funcionario
+          .atualizarAtribuicoes(atribuicoes)
+          .then(() => {
+            res.status(200).json({
+              status: true,
+              message: "Atribuições atualizadas com sucesso!",
+            });
+          })
+          .catch((erro) => {
+            res.status(500).json({
+              status: false,
+              message: erro.message,
+            });
+          });
+      }
+    }
+  }
+
+  removerAtribuicao(req, res) {
+    res.type("application/json");
+    if (req.method === "DELETE") {
+      const codigoFuncionario = req.params.codigo;
+      const atribuicoes = req.body.atribuicoes;
+
+      if (codigoFuncionario && atribuicoes && atribuicoes.length > 0) {
+        const funcionario = new Turma(codigoFuncionario);
+        funcionario
+          .removerAtribuicao(atribuicoes)
+          .then(() => {
+            res.status(200).json({
+              status: true,
+              message: "Atribuição removida com sucesso!",
+            });
+          })
+          .catch((erro) => {
+            res.status(500).json({
+              status: false,
+              message: erro.message,
+            });
+          });
+      }
     }
   }
 }
