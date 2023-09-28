@@ -1,0 +1,74 @@
+CREATE SCHEMA IF NOT EXISTS `pfsii` DEFAULT CHARACTER SET utf8 ;
+USE `pfsii` ;
+
+CREATE TABLE IF NOT EXISTS `pfsii`.`pessoa` (
+  `codigo` INT(11) NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(80) NOT NULL,
+  `telefone` VARCHAR(20) NOT NULL,
+  `email` VARCHAR(45) NOT NULL,
+  `endereco` VARCHAR(60) NOT NULL,
+  `bairro` VARCHAR(60) NOT NULL,
+  `cidade` VARCHAR(60) NOT NULL,
+  `cep` VARCHAR(10) NOT NULL,
+  `uf` VARCHAR(2) NOT NULL,
+  PRIMARY KEY (`codigo`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 36
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `pfsii`.`cargo` (
+  `codigo` INT(11) NOT NULL AUTO_INCREMENT,
+  `nome` VARCHAR(45) NOT NULL,
+  `descricao` VARCHAR(299) NULL DEFAULT NULL,
+  PRIMARY KEY (`codigo`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `pfsii`.`funcionario` (
+  `codigo` INT(11) NOT NULL AUTO_INCREMENT,
+  `cpf` VARCHAR(20) NOT NULL,
+  `dt_nasc` DATE NOT NULL,
+  `dt_admissao` DATE NOT NULL,
+  `dt_demissao` DATE DEFAULT NULL,
+  `status` varchar (10) NOT NULL,
+  `nome_usuario` VARCHAR(45) NULL DEFAULT NULL,
+  `senha_usuario` VARCHAR(45) NULL DEFAULT NULL,
+  `Cargo_codigo` INT(11) NOT NULL,
+  `Pessoa_codigo` INT(11) NOT NULL,
+  PRIMARY KEY (`codigo`),
+  UNIQUE INDEX `cpf_UNIQUE` (`cpf` ASC),
+  UNIQUE INDEX `nome_usuario_UNIQUE` (`nome_usuario` ASC),
+  INDEX `fk_Funcionario_Cargo1_idx` (`Cargo_codigo` ASC),
+  INDEX `fk_Funcionario_Pessoa1_idx` (`Pessoa_codigo` ASC),
+  CONSTRAINT `fk_Funcionario_Cargo1`
+    FOREIGN KEY (`Cargo_codigo`)
+    REFERENCES `pfsii`.`cargo` (`codigo`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Funcionario_Pessoa1`
+    FOREIGN KEY (`Pessoa_codigo`)
+    REFERENCES `pfsii`.`pessoa` (`codigo`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `pfsii`.`atribuicao`(
+   `codigo` INT(11) NOT NULL AUTO_INCREMENT,
+   `data_atribuicao` DATE NOT NULL,
+   `status` varchar (10) NOT NULL,
+   `funcionario_codigo` INT(11) NOT NULL,
+   `cargo_codigo` INT(11) NOT NULL,
+   PRIMARY KEY (`codigo`),
+   CONSTRAINT `fk_Atribuicao_Cargo`
+     FOREIGN KEY (`cargo_codigo`)
+     REFERENCES `pfsii`.`cargo` (`codigo`)
+     ON DELETE NO ACTION
+     ON UPDATE NO ACTION,
+   CONSTRAINT `fk_Atribuicao_Funcionario`
+    FOREIGN KEY (`funcionario_codigo`)
+    REFERENCES `pfsii`.`funcionario` (`codigo`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;

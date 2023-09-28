@@ -207,7 +207,7 @@ export default class Funcionario {
       status: this.#status,
       nomeUsuario: this.#nomeUsuario,
       senhaUsuario: this.#senhaUsuario,
-      cargoPrincipal: this.#cargo,
+      cargo: this.#cargo,
       nome: this.#nome,
       telefone: this.#telefone,
       email: this.#email,
