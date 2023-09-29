@@ -261,11 +261,11 @@ export default class Funcionario {
 
   async atualizarAtribuicoes(atribuicoes) {
     const funcionarioBD = new FuncionarioBD();
-    await funcionarioBD.atualizarAtribuicoes(this, atribuicoes);
+    await funcionarioBD.atualizarAtribuicoes(atribuicoes);
   }
 
-  async removerAtribuicao(atribuicao) {
+  async removerAtribuicao(atribuicoes) {
     const funcionarioBD = new FuncionarioBD();
-    await funcionarioBD.removerAtribuicao(this, atribuicao);
+    await funcionarioBD.removerAtribuicao(atribuicoes);
   }
 }

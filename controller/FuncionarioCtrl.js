@@ -319,7 +319,7 @@ export default class FuncionarioCTRL {
       const atribuicoes = req.body.atribuicoes;
 
       if (codigoFuncionario && atribuicoes && atribuicoes.length > 0) {
-        const funcionario = new Turma(codigoFuncionario);
+        const funcionario = new Funcionario(codigoFuncionario);
         funcionario
           .removerAtribuicao(atribuicoes)
           .then(() => {

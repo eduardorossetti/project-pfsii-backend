@@ -5,21 +5,21 @@ export default async function conectar() {
     return global.conexao;
   }
 
-  const conn = mysql.createPool({
+  /*const conn = mysql.createPool({
     host: "localhost",
     user: "aluno10-pfsii",
     password: "rK8xGEo9iYJVHrNmoKMg",
     database: "aprata-aluno10-pfsii",
     dateStrings: "date",
-  });
+  });*/
 
-  /*const conn = mysql.createPool({
+  const conn = mysql.createPool({
     host: "localhost",
     user: "root",
     password: "",
     database: "pfsii",
     dateStrings: "date",
-  });*/
+  });
 
   global.conexao = conn;
   return conn;
