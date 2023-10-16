@@ -1,7 +1,7 @@
 {
-  "name": "pi-atividade2",
+  "name": "project-pfsii-backend",
   "version": "1.0.0",
-  "description": "Desenvolvimento das camadas de modelo e persistência para a atividade 2 de Programação para Internet.",
+  "description": "Projeto da graduação em Análise e Desenvolvimento de Sistemas",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -11,12 +11,9 @@
   },
   "keywords": [
     "backend",
-    "modelo",
-    "persistencia",
-    "atividade2",
-    "programacaoInternet"
+    "pfsii"
   ],
-  "author": "Vinicius S Alves",
+  "author": "Eduardo Rossetti",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

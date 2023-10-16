@@ -1,5 +1,5 @@
 import { Router } from "express";
-import CargoCTRL from "../controller/CargoCtrl.js";
+import CargoCTRL from "../controllers/CargoController.js";
 
 const rotaCargo = new Router();
 const cargoCtrl = new CargoCTRL();

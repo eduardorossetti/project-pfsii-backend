@@ -1,22 +1,23 @@
 import express from "express";
-import rotaFuncionario from "./routes/rotaFuncionario.js";
-import rotaCargo from "./routes/rotaCargo.js";
+import rotaFuncionario from "./routes/funcionarioRoutes.js";
+import rotaCargo from "./routes/cargoRoutes.js";
 import cors from "cors";
+import rotaDepartamento from "./routes/DepartamentoRoutes.js";
 
 const app = express();
 
 app.use(express.json());
 app.use(cors({ origin: "*" }));
 
-// Configurar a aplicação para aceitar objetos aninhados
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/funcionarios", rotaFuncionario);
 app.use("/cargos", rotaCargo);
+app.use("/departamentos", rotaDepartamento)
 
 const door = 4010;
 const hostname = "0.0.0.0";
 
 app.listen(door, hostname, () => {
-  console.log("Server listening on http://" + hostname + ":" + door);
+  console.log(`Server listening on http://${hostname}:${door}`);
 });

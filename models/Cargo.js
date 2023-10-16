@@ -1,14 +1,18 @@
-import CargoBD from "../database/CargoBD.js";
+import CargoBD from "../repositories/CargoRepository.js";
 
 export default class Cargo {
   #codigo;
   #nome;
   #descricao;
+  #departamento;
+  #funcionarios;
 
-  constructor(codigo, nome, descricao) {
+  constructor(codigo, nome, descricao, departamento, funcionarios) {
     this.#codigo = codigo;
     this.#nome = nome;
     this.#descricao = descricao;
+    this.#departamento = departamento;
+    this.#funcionarios = funcionarios;
   }
 
   get codigo() {
@@ -31,11 +35,29 @@ export default class Cargo {
     this.#descricao = novoDescricao;
   }
 
+  get departamento() {
+    return this.#departamento;
+  }
+
+  set departamento(departamento) {
+    this.#departamento = departamento;
+  }
+
+  get funcionarios() {
+    return this.#funcionarios;
+  }
+
+  set funcionarios(funcionarios) {
+    this.#funcionarios = funcionarios;
+  }
+
   toJSON() {
     return {
       codigo: this.#codigo,
       nome: this.#nome,
       descricao: this.#descricao,
+      departamento: this.#departamento,
+      funcionarios: this.#funcionarios,
     };
   }
 

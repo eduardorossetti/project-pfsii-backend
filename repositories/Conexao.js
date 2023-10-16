@@ -8,8 +8,8 @@ export default async function conectar() {
   const conn = mysql.createPool({
     host: "localhost",
     user: "aluno10-pfsii",
-    password: "rK8xGEo9iYJVHrNmoKMg",
-    database: "aprata-aluno10-pfsii",
+    password: "6eqrmzAGmMMT897N5t4m",
+    database: "new-aprata-aluno10",
     dateStrings: "date",
   });
 
@@ -17,7 +17,7 @@ export default async function conectar() {
     host: "localhost",
     user: "root",
     password: "",
-    database: "pfsii",
+    database: "new-aprata-aluno10",
     dateStrings: "date",
   });*/
 

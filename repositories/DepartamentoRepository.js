@@ -1,11 +1,11 @@
-import Cargo from "../model/Cargo.js";
+import Departamento from "../models/Departamento.js";
 import conectar from "./Conexao.js";
 
-export default class CargoBD {
+export default class DepartamentoBD {
   constructor() {}
 
-  async gravar(cargo) {
-    if (cargo instanceof Cargo) {
+  async gravar(departamento) {
+    if (departamento instanceof Departamento) {
       const conexao = await conectar();
       let conn = null;
       let lastInsertedId = null;
@@ -14,9 +14,9 @@ export default class CargoBD {
         conn = await conexao.getConnection();
         await conn.beginTransaction();
 
-        const [response, meta] = await conn.query(
-          "INSERT INTO cargo(nome,descricao) VALUES (?,?)",
-          [cargo.nome, cargo.descricao]
+        const [response] = await conn.query(
+          "INSERT INTO departamento(nome,descricao) VALUES (?,?)",
+          [departamento.nome, departamento.descricao]
         );
 
         await conn.commit();
@@ -32,8 +32,8 @@ export default class CargoBD {
     }
   }
 
-  async alterar(cargo) {
-    if (cargo instanceof Cargo) {
+  async alterar(departamento) {
+    if (departamento instanceof Departamento) {
       const conexao = await conectar();
       let conn = null;
 
@@ -42,8 +42,8 @@ export default class CargoBD {
         await conn.beginTransaction();
 
         await conn.query(
-          "UPDATE cargo SET nome=?, descricao=? WHERE codigo=?",
-          [cargo.nome, cargo.descricao, cargo.codigo]
+          "UPDATE departamento SET nome=?, descricao=? WHERE codigo=?",
+          [departamento.nome, departamento.descricao, departamento.codigo]
         );
 
         await conn.commit();
@@ -56,8 +56,8 @@ export default class CargoBD {
     }
   }
 
-  async excluir(cargo) {
-    if (cargo instanceof Cargo) {
+  async excluir(departamento) {
+    if (departamento instanceof Departamento) {
       const conexao = await conectar();
       let conn = null;
 
@@ -65,7 +65,7 @@ export default class CargoBD {
         conn = await conexao.getConnection();
         await conn.beginTransaction();
 
-        await conn.query("DELETE FROM cargo WHERE codigo=?", cargo.codigo);
+        await conn.query("DELETE FROM departamento WHERE codigo=?", departamento.codigo);
         await conn.commit();
       } catch (error) {
         if (conn) await conn.rollback();
@@ -79,13 +79,15 @@ export default class CargoBD {
   async consultar() {
     const conexao = await conectar();
 
-    const sql = "SELECT * FROM cargo ORDER BY nome";
+    const sql = `SELECT * FROM departamento ORDER BY departamento.nome`;
+
     const [rows] = await conexao.query(sql);
 
     const cargos = [];
     for (const row of rows) {
-      const cargo = new Cargo(row["codigo"], row["nome"], row["descricao"]);
-      cargos.push(cargo);
+      const departamento = new Departamento(row["codigo"], row["nome"], row["descricao"]);
+
+      cargos.push(departamento);
     }
     return cargos;
   }

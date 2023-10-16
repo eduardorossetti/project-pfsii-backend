@@ -1,16 +1,14 @@
-import Cargo from "../model/Cargo.js";
+import Cargo from "../models/Cargo.js";
 
 export default class CargoCTRL {
   gravar(req, res) {
     res.type("application/json");
     if (req.method === "POST" && req.is("application/json")) {
-      const dados = req.body;
-      const nome = dados.nome;
-      const descricao = dados.descricao;
+      const { nome, descricao, departamento } = req.body;
 
-      if (nome && descricao) {
-        const cargo = new Cargo("", nome, descricao);
-        
+      if (nome && descricao && departamento) {
+        const cargo = new Cargo(null, nome, descricao, departamento);
+
         cargo
           .gravar()
           .then((lastInsertedId) => {
@@ -44,13 +42,10 @@ export default class CargoCTRL {
   atualizar(req, res) {
     res.type("application/json");
     if (req.method === "PUT" && req.is("application/json")) {
-      const dados = req.body;
-      const codigo = dados.codigo;
-      const nome = dados.nome;
-      const descricao = dados.descricao;
+      const { codigo, nome, descricao, departamento } = req.body;
 
-      if (codigo && nome && descricao) {
-        const cargo = new Cargo(codigo, nome, descricao);
+      if (codigo && nome && descricao && departamento) {
+        const cargo = new Cargo(codigo, nome, descricao, departamento);
         cargo
           .atualizar()
           .then(() => {
@@ -81,7 +76,6 @@ export default class CargoCTRL {
   }
 
   excluir(req, res) {
-    // res.type("application/json");
     const codigo = req.params.codigo;
     const cargo = new Cargo(codigo);
 
@@ -124,3 +118,4 @@ export default class CargoCTRL {
     }
   }
 }
+

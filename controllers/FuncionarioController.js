@@ -1,55 +1,44 @@
-import Funcionario from "../model/Funcionario.js";
+import Funcionario from "../models/Funcionario.js";
+import PessoaInfo from "../models/Pessoa.js";
 
 export default class FuncionarioCTRL {
   gravar(req, res) {
     res.type("application/json");
     if (req.method === "POST" && req.is("application/json")) {
       const dados = req.body;
-      const bairro = dados.bairro;
-      const cargo = dados.cargo;
-      const cep = dados.cep;
-      const cidade = dados.cidade;
-      const cpf = dados.cpf;
-      const dataAdmissao = dados.dataAdmissao;
-      const dataDemissao = dados.dataDemissao;
-      const dataNascimento = dados.dataNascimento;
-      const email = dados.email;
-      const endereco = dados.endereco;
       const nome = dados.nome;
+      const cpf = dados.cpf;
+      const dataNascimento = dados.dataNascimento;
+      const status = dados.status;
       const nomeUsuario = dados.nomeUsuario;
       const senhaUsuario = dados.senhaUsuario;
-      const status = dados.status;
-      const telefone = dados.telefone;
-      const uf = dados.uf;
+      const telefone = dados.info_telefone;
+      const email = dados.info_email;
+      const endereco = dados.info_endereco;
+      const bairro = dados.info_bairro;
+      const cidade = dados.info_cidade;
+      const cep = dados.info_cep;
+      const uf = dados.info_uf;
+      const atribuicoes = dados.atribuicoes;
 
       if (
-        bairro &&
-        cargo &&
-        cep &&
-        cidade &&
-        cpf &&
-        dataAdmissao &&
-        dataNascimento &&
-        email &&
-        endereco &&
         nome &&
+        cpf &&
+        dataNascimento &&
+        status &&
         nomeUsuario &&
         senhaUsuario &&
-        status &&
         telefone &&
-        uf
+        email &&
+        endereco &&
+        bairro &&
+        cidade &&
+        cep &&
+        uf &&
+        atribuicoes
       ) {
-        const funcionario = new Funcionario(
-          0,
-          nome,
-          cpf,
-          dataNascimento,
-          dataAdmissao,
-          dataDemissao,
-          status,
-          nomeUsuario,
-          senhaUsuario,
-          cargo,
+        const info = new PessoaInfo(
+          null, //codigo
           telefone,
           email,
           endereco,
@@ -57,6 +46,18 @@ export default class FuncionarioCTRL {
           cidade,
           cep,
           uf
+        );
+
+        const funcionario = new Funcionario(
+          null, //codigo
+          nome,
+          cpf,
+          dataNascimento,
+          status,
+          nomeUsuario,
+          senhaUsuario,
+          info,
+          atribuicoes
         );
 
         funcionario
@@ -93,52 +94,43 @@ export default class FuncionarioCTRL {
     res.type("application/json");
     if (req.method === "PUT" && req.is("application/json")) {
       const dados = req.body;
-      const bairro = dados.bairro;
-      const cargo = dados.cargo;
-      const cep = dados.cep;
-      const cidade = dados.cidade;
-      const codigo = dados.codigo;
-      const cpf = dados.cpf;
-      const dataAdmissao = dados.dataAdmissao;
-      const dataDemissao = dados.dataDemissao;
-      const dataNascimento = dados.dataNascimento;
-      const email = dados.email;
-      const endereco = dados.endereco;
+      const codigoFuncionario = dados.codigo;
       const nome = dados.nome;
+      const cpf = dados.cpf;
+      const dataNascimento = dados.dataNascimento;
+      const status = dados.status;
       const nomeUsuario = dados.nomeUsuario;
       const senhaUsuario = dados.senhaUsuario;
-      const status = dados.status;
-      const telefone = dados.telefone;
-      const uf = dados.uf;
+      const codigoPessoa = dados.info_codigo;
+      const telefone = dados.info_telefone;
+      const email = dados.info_email;
+      const endereco = dados.info_endereco;
+      const bairro = dados.info_bairro;
+      const cidade = dados.info_cidade;
+      const cep = dados.info_cep;
+      const uf = dados.info_uf;
+      const atribuicoes = dados.atribuicoes;
+
       if (
-        bairro &&
-        cargo &&
-        cep &&
-        cidade &&
-        codigo &&
-        cpf &&
-        dataAdmissao &&
-        dataNascimento &&
-        email &&
-        endereco &&
+        codigoFuncionario &&
         nome &&
+        cpf &&
+        dataNascimento &&
+        status &&
         nomeUsuario &&
         senhaUsuario &&
-        status &&
+        codigoPessoa &&
         telefone &&
-        uf
+        email &&
+        endereco &&
+        bairro &&
+        cidade &&
+        cep &&
+        uf &&
+        atribuicoes
       ) {
-        const funcionario = new Funcionario(
-          codigo,
-          nome,
-          cpf,
-          dataNascimento,
-          dataAdmissao,
-          dataDemissao,
-          status,
-          nomeUsuario,
-          senhaUsuario,
-          cargo,
+        const info = new PessoaInfo(
+          codigoPessoa,
           telefone,
           email,
           endereco,
@@ -147,6 +139,19 @@ export default class FuncionarioCTRL {
           cep,
           uf
         );
+
+        const funcionario = new Funcionario(
+          codigoFuncionario,
+          nome,
+          cpf,
+          dataNascimento,
+          status,
+          nomeUsuario,
+          senhaUsuario,
+          info,
+          atribuicoes
+        );
+
         funcionario
           .atualizar()
           .then(() => {
@@ -178,9 +183,11 @@ export default class FuncionarioCTRL {
 
   excluir(req, res) {
     const codigo = req.params.codigo;
-    const funcionario = new Funcionario(codigo);
+    const info = new PessoaInfo(codigo);
+    const funcionario = new Funcionario();
+
     funcionario
-      .excluir()
+      .excluir(info)
       .then(() => {
         res.status(200).json({
           status: true,
@@ -201,6 +208,29 @@ export default class FuncionarioCTRL {
       const funcionario = new Funcionario();
       funcionario
         .consultar()
+        .then((funcionarios) => {
+          res.status(200).json(funcionarios);
+        })
+        .catch((erro) => {
+          res.status(500).json({
+            status: false,
+            message: erro.message,
+          });
+        });
+    } else {
+      res.status(400).json({
+        status: false,
+        message: "Método não permitido! Consulte a documentação da API",
+      });
+    }
+  }
+
+  consultarProfessores(req, res) {
+    res.type("application/json");
+    if (req.method === "GET") {
+      const funcionario = new Funcionario();
+      funcionario
+        .consultarProfessores()
         .then((funcionarios) => {
           res.status(200).json(funcionarios);
         })
@@ -241,33 +271,6 @@ export default class FuncionarioCTRL {
       });
     }
   }
-
-  atribuir(req, res) {
-    res.type("application/json");
-    if (req.method === "POST") {
-      const codigoFuncionario = req.params.codigo;
-      const atribuicoes = req.body.atribuicoes;
-
-      if (codigoFuncionario && atribuicoes && atribuicoes.length > 0) {
-        const funcionario = new Funcionario(codigoFuncionario);
-        funcionario
-          .atribuir(atribuicoes)
-          .then(() => {
-            res.status(200).json({
-              status: true,
-              message: "Cargos atribuidos com sucesso!",
-            });
-          })
-          .catch((erro) => {
-            res.status(500).json({
-              status: false,
-              message: erro.message,
-            });
-          });
-      }
-    }
-  }
-
   obterAtribuicoes(req, res) {
     res.type("application/json");
     if (req.method === "GET") {
@@ -286,55 +289,4 @@ export default class FuncionarioCTRL {
     }
   }
 
-  atualizarAtribuicoes(req, res) {
-    res.type("application/json");
-    if (req.method === "PUT") {
-      const codigoFuncionario = req.params.codigo;
-      const atribuicoes = req.body.atribuicoes;
-
-      if (codigoFuncionario && atribuicoes && atribuicoes.length > 0) {
-        const funcionario = new Funcionario(codigoFuncionario);
-        funcionario
-          .atualizarAtribuicoes(atribuicoes)
-          .then(() => {
-            res.status(200).json({
-              status: true,
-              message: "Atribuições atualizadas com sucesso!",
-            });
-          })
-          .catch((erro) => {
-            res.status(500).json({
-              status: false,
-              message: erro.message,
-            });
-          });
-      }
-    }
-  }
-
-  removerAtribuicao(req, res) {
-    res.type("application/json");
-    if (req.method === "DELETE") {
-      const codigoFuncionario = req.params.codigo;
-      const atribuicoes = req.body.atribuicoes;
-
-      if (codigoFuncionario && atribuicoes && atribuicoes.length > 0) {
-        const funcionario = new Funcionario(codigoFuncionario);
-        funcionario
-          .removerAtribuicao(atribuicoes)
-          .then(() => {
-            res.status(200).json({
-              status: true,
-              message: "Atribuição removida com sucesso!",
-            });
-          })
-          .catch((erro) => {
-            res.status(500).json({
-              status: false,
-              message: erro.message,
-            });
-          });
-      }
-    }
-  }
 }
