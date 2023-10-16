@@ -1,6 +1,6 @@
 import express from "express";
-import rotaFuncionario from "./routes/funcionarioRoutes.js";
-import rotaCargo from "./routes/cargoRoutes.js";
+import rotaFuncionario from "./routes/FuncionarioRoutes.js";
+import rotaCargo from "./routes/CargoRoutes.js";
 import cors from "cors";
 import rotaDepartamento from "./routes/DepartamentoRoutes.js";
 
