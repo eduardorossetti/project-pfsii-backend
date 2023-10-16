@@ -19,7 +19,8 @@ export default async function conectar() {
     password: "",
     database: "new-aprata-aluno10",
     dateStrings: "date",
-  });*/
+  });
+  */
 
   global.conexao = conn;
   return conn;
