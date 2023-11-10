@@ -17,6 +17,7 @@ app.use("/departamentos", rotaDepartamento)
 
 const door = 4010;
 const hostname = "0.0.0.0";
+
 app.listen(door, hostname, () => {
   console.log(`Server listening on http://${hostname}:${door}`);
 });
