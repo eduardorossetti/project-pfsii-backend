@@ -1,4 +1,4 @@
-import FuncionarioBD from "../repositories/FuncionarioRepository.js";
+import FuncionarioBD from "../repositories/FuncionarioDAO.js";
 
 export default class Funcionario {
   #codigo;

@@ -1,23 +1,14 @@
 export default class PessoaInfo {
   #codigo;
-  #telefone;
   #email;
   #endereco;
   #bairro;
   #cidade;
   #cep;
   #uf;
+  #telefone;
 
-  constructor(
-    codigo,
-    telefone,
-    email,
-    endereco,
-    bairro,
-    cidade,
-    cep,
-    uf,
-  ) {
+  constructor(codigo, email, endereco, bairro, cidade, cep, uf, telefone) {
     this.#codigo = codigo;
     this.#telefone = telefone;
     this.#email = email;
@@ -91,13 +82,13 @@ export default class PessoaInfo {
   toJSON() {
     return {
       codigo: this.#codigo,
-      telefone: this.#telefone,
       email: this.#email,
       endereco: this.#endereco,
       bairro: this.#bairro,
       cidade: this.#cidade,
       cep: this.#cep,
       uf: this.#uf,
+      telefone: this.#telefone,
     };
   }
 }

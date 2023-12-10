@@ -1,4 +1,4 @@
-import CargoBD from "../repositories/CargoRepository.js";
+import CargoBD from "../repositories/CargoDAO.js";
 
 export default class Cargo {
   #codigo;

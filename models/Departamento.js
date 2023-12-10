@@ -1,4 +1,4 @@
-import DepartamentoBD from "../repositories/DepartamentoRepository.js";
+import DepartamentoBD from "../repositories/DepartamentoDAO.js";
 
 export default class Departamento {
   #codigo;
