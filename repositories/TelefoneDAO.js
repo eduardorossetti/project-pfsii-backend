@@ -2,32 +2,31 @@ import conectar from "./Conexao.js";
 import Telefone from "../models/Telefone.js";
 
 export default class TelefoneBD {
-  constructor() {}
+  constructor() { }
 
   async gravar(telefone) {
     if (telefone instanceof Telefone) {
       const conexao = await conectar();
       let conn = null;
-      let lastInsertedId = null;
 
       try {
         conn = await conexao.getConnection();
         await conn.beginTransaction();
 
-        const [response] = await conn.query(
-          "INSERT INTO telefone(numero, pessoa_info_codigo) VALUES (?, ?)",
-          [telefone.numero, telefone.pessoaId]
-        );
+        for (const n in telefone.numero) {
+          await conn.query(
+            "INSERT INTO telefone(numero, pessoa_info_codigo) VALUES (?, ?)",
+            [telefone.numero[n], telefone.pessoaId]
+          );
+        }
 
         await conn.commit();
 
-        lastInsertedId = response.insertId;
       } catch (error) {
         if (conn) await conn.rollback();
         throw error;
       } finally {
         if (conn) conn.release();
-        return lastInsertedId;
       }
     }
   }
@@ -42,11 +41,21 @@ export default class TelefoneBD {
         await conn.beginTransaction();
 
         await conn.query(
-          "UPDATE telefone SET numero=?, pessoa_info_codigo=? WHERE codigo=?",
-          [telefone.numero, telefone.pessoaId, telefone.codigo]
+          "DELETE FROM telefone WHERE pessoa_info_codigo=?",
+          [telefone.pessoaId]
         );
 
+        if (telefone.numero.length >= 1) {
+          for (const n in telefone.numero) {
+            await conn.query(
+              "INSERT INTO telefone(numero, pessoa_info_codigo) VALUES (?, ?)",
+              [telefone.numero[n], telefone.pessoaId]
+            );
+          }
+        }
+
         await conn.commit();
+
       } catch (error) {
         if (conn) await conn.rollback();
         throw error;
@@ -59,41 +68,42 @@ export default class TelefoneBD {
   async excluir(telefone) {
     if (telefone instanceof Telefone) {
       const conexao = await conectar();
-      let conn = null;
-
-      try {
-        conn = await conexao.getConnection();
-        await conn.beginTransaction();
-
-        await conn.query("DELETE FROM telefone WHERE codigo=?", telefone.codigo);
-        await conn.commit();
-      } catch (error) {
-        if (conn) await conn.rollback();
-        throw error;
-      } finally {
-        if (conn) conn.release();
-      }
+      const sql = `DELETE FROM telefone WHERE pessoa_info_codigo = ?`;
+      await conexao.query(sql, [telefone.pessoaId]);
     }
   }
 
   async consultar() {
     const conexao = await conectar();
 
-    const sql = `SELECT * FROM telefone`;
+    const sql = `SELECT t.numero FROM telefone t`;
 
     const [rows] = await conexao.query(sql);
 
     const telefones = [];
 
     for (const row of rows) {
-      const telefone = new Telefone(
-        row["codigo"],
-        row["numero"],
-        row["pessoa_info_codigo"]
-      );
-
-      telefones.push(telefone);
+      telefones.push(row["numero"]);
     }
+
     return telefones;
+  }
+
+  async consultarPorPessoa(telefone) {
+    if (telefone instanceof Telefone) {
+      const conexao = await conectar();
+
+      const sql = `SELECT t.numero FROM telefone t WHERE pessoa_info_codigo = ?`;
+
+      const [rows] = await conexao.query(sql, telefone.pessoaId);
+
+      const telefones = [];
+
+      for (const row of rows) {
+        telefones.push(row["numero"]);
+      }
+
+      return telefones;
+    }
   }
 }

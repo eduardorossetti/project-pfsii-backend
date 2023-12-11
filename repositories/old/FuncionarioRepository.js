@@ -1,19 +1,18 @@
-import Funcionario from "../models/Funcionario.js";
-import PessoaInfo from "../models/Pessoa.js";
-import Cargo from "../models/Cargo.js";
-import conectar from "./Conexao.js";
-import Departamento from "../models/Departamento.js";
-import Atribuicao from "../models/Atribuicao.js";
-import Telefone from "../models/Telefone.js";
+import Funcionario from "../../models/Funcionario.js";
+import PessoaInfo from "../../models/Pessoa.js";
+import Cargo from "../../models/Cargo.js";
+import conectar from "../Conexao.js";
+import Departamento from "../../models/Departamento.js";
+import Atribuicao from "../../models/Atribuicao.js";
 
 export default class FuncionarioBD {
-  constructor() { }
+  constructor() {}
 
   async gravar(funcionario) {
     if (funcionario instanceof Funcionario) {
       const conexao = await conectar();
       let conn = null;
-      let lastInsertedId = { pessoaId: "", funcionarioId: "" };
+      let lastInsertedId = null;
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().slice(0, 10);
 
@@ -22,9 +21,10 @@ export default class FuncionarioBD {
         await conn.beginTransaction();
 
         const [responsePessoa] = await conn.query(
-          `INSERT INTO pessoa_info (email, endereco,
-            bairro, cidade, cep, uf) VALUES (?,?,?,?,?,?)`,
+          `INSERT INTO pessoa_info (telefone, email, endereco,
+            bairro, cidade, cep, uf) VALUES (?,?,?,?,?,?,?)`,
           [
+            funcionario.info.telefone,
             funcionario.info.email,
             funcionario.info.endereco,
             funcionario.info.bairro,
@@ -33,8 +33,6 @@ export default class FuncionarioBD {
             funcionario.info.uf,
           ]
         );
-
-        lastInsertedId.pessoaId = responsePessoa.insertId;
 
         const [responseFuncionario] = await conn.query(
           `INSERT INTO funcionario (nome, cpf, data_nascimento,
@@ -60,7 +58,7 @@ export default class FuncionarioBD {
 
         await conn.commit();
 
-        lastInsertedId.funcionarioId = responseFuncionario.insertId;
+        lastInsertedId = responseFuncionario.insertId;
       } catch (error) {
         if (conn) await conn.rollback();
         throw error;
@@ -83,9 +81,10 @@ export default class FuncionarioBD {
         await conn.beginTransaction();
 
         await conn.query(
-          `UPDATE pessoa_info SET email=?, endereco=?, bairro=?, cidade=?,
+          `UPDATE pessoa_info SET telefone=?, email=?, endereco=?, bairro=?, cidade=?,
           cep=?, uf=? WHERE codigo=?`,
           [
+            funcionario.info.telefone,
             funcionario.info.email,
             funcionario.info.endereco,
             funcionario.info.bairro,
@@ -169,46 +168,39 @@ export default class FuncionarioBD {
     const conexao = await conectar();
 
     const sql = `SELECT 
-                  f.codigo 'codigo_funcionario',
-                  f.nome,
-                  f.cpf,
-                  f.data_nascimento,
-                  f.status,
-                  f.nome_usuario,
-                  f.senha_usuario,
-                  i.codigo 'pessoa_info_codigo',
-                  i.email,
-                  i.endereco,
-                  i.bairro,
-                  i.cidade,
-                  i.cep,
-                  i.uf,
-                  CONCAT('[',
-                          GROUP_CONCAT(DISTINCT JSON_OBJECT('codigo', c.codigo, 'nome', c.nome)),
-                          ']') AS atribuicoes
+                f.codigo 'codigo_funcionario',
+                f.nome,
+                f.cpf,
+                f.data_nascimento,
+                f.status,
+                f.nome_usuario,
+                f.senha_usuario,
+                i.codigo 'pessoa_info_codigo',
+                i.telefone,
+                i.email,
+                i.endereco,
+                i.bairro,
+                i.cidade,
+                i.cep,
+                i.uf,
+                CONCAT('[',
+                        GROUP_CONCAT(DISTINCT JSON_OBJECT('codigo', c.codigo, 'nome', c.nome)),
+                        ']') AS atribuicoes
                 FROM
                 pessoa_info i
                         JOIN     
                     funcionario f ON i.codigo = f.pessoa_info_codigo
-                        JOIN
+                        LEFT JOIN
                     atribuicao a ON f.codigo = a.funcionario_codigo
-                        JOIN
+                        LEFT JOIN
                     cargo c ON a.cargo_codigo = c.codigo
                 GROUP BY f.codigo
                 ORDER BY f.nome`;
-
-    // CONCAT('[',
-    // GROUP_CONCAT(DISTINCT JSON_OBJECT('codigo', t.codigo, 'numero', t.numero)),
-    // ']') AS telefones
-    // LEFT JOIN
-    // telefone t ON i.codigo = t.pessoa_info_codigo
 
     const [rows] = await conexao.query(sql);
     const funcionarios = [];
 
     for (const row of rows) {
-      const telefone = new Telefone(null, null, row["pessoa_info_codigo"]);
-      const telefones = await telefone.consultarPorPessoa();
       const atribuicoes = [];
 
       for (const item of JSON.parse(row["atribuicoes"])) {
@@ -218,13 +210,13 @@ export default class FuncionarioBD {
 
       const info = new PessoaInfo(
         row["pessoa_info_codigo"],
+        row["telefone"],
         row["email"],
         row["endereco"],
         row["bairro"],
         row["cidade"],
         row["cep"],
-        row["uf"],
-        telefones
+        row["uf"]
       );
 
       const funcionario = new Funcionario(
@@ -273,6 +265,7 @@ export default class FuncionarioBD {
                 f.nome_usuario,
                 f.senha_usuario,
                 i.codigo 'pessoa_info_codigo',
+                i.telefone,
                 i.email,
                 i.endereco,
                 i.bairro,
@@ -336,10 +329,10 @@ export default class FuncionarioBD {
 
   async obterAtribuicoes(funcionario) {
     const conexao = await conectar();
-
+  
     // Obter os dados do funcionário
     funcionario = await this.obterFuncionario(funcionario.codigo);
-
+  
     const sql = `SELECT 
                   a.funcionario_codigo as funcionario_codigo,
                   a.cargo_codigo as codigo_cargo,
@@ -353,33 +346,33 @@ export default class FuncionarioBD {
                 JOIN cargo c ON a.cargo_codigo = c.codigo
                 JOIN departamento d ON c.departamento_codigo = d.codigo
                 WHERE a.funcionario_codigo = ?`;
-
+  
     const [atribuicoes] = await conexao.query(sql, [funcionario.codigo]);
-
+  
     const atribuidos = atribuicoes.map((row) => {
       const departamento = new Departamento(
         row["codigo_departamento"],
         row["nome_departamento"],
         row["descricao_departamento"]
       );
-
+  
       const cargo = new Cargo(
         row["codigo_cargo"],
         row["nome_cargo"],
         row["descricao_cargo"],
         departamento
       );
-
+  
       return new Atribuicao(
         row["funcionario_codigo"],
         row["data_atribuicao"],
         cargo,
       );
     });
-
+  
     funcionario.atribuicoes = atribuidos;
-
+  
     return funcionario;
   }
-
+  
 }

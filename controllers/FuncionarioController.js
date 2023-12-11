@@ -12,7 +12,6 @@ export default class FuncionarioCTRL {
       const status = dados.status;
       const nomeUsuario = dados.nomeUsuario;
       const senhaUsuario = dados.senhaUsuario;
-      const telefone = dados.info_telefone;
       const email = dados.info_email;
       const endereco = dados.info_endereco;
       const bairro = dados.info_bairro;
@@ -28,7 +27,6 @@ export default class FuncionarioCTRL {
         status &&
         nomeUsuario &&
         senhaUsuario &&
-        telefone &&
         email &&
         endereco &&
         bairro &&
@@ -39,7 +37,6 @@ export default class FuncionarioCTRL {
       ) {
         const info = new PessoaInfo(
           null, //codigo
-          telefone,
           email,
           endereco,
           bairro,
@@ -66,7 +63,8 @@ export default class FuncionarioCTRL {
             res.status(200).json({
               status: true,
               message: "Dados gravados com sucesso!",
-              id: lastInsertedId,
+              pessoaId: lastInsertedId.pessoaId,
+              funcionarioId: lastInsertedId.funcionarioId,
             });
           })
           .catch((erro) => {
@@ -102,7 +100,6 @@ export default class FuncionarioCTRL {
       const nomeUsuario = dados.nomeUsuario;
       const senhaUsuario = dados.senhaUsuario;
       const codigoPessoa = dados.info_codigo;
-      const telefone = dados.info_telefone;
       const email = dados.info_email;
       const endereco = dados.info_endereco;
       const bairro = dados.info_bairro;
@@ -120,7 +117,6 @@ export default class FuncionarioCTRL {
         nomeUsuario &&
         senhaUsuario &&
         codigoPessoa &&
-        telefone &&
         email &&
         endereco &&
         bairro &&
@@ -131,7 +127,6 @@ export default class FuncionarioCTRL {
       ) {
         const info = new PessoaInfo(
           codigoPessoa,
-          telefone,
           email,
           endereco,
           bairro,
@@ -182,6 +177,7 @@ export default class FuncionarioCTRL {
   }
 
   excluir(req, res) {
+    console.log(req.params);
     const codigo = req.params.codigo;
     const info = new PessoaInfo(codigo);
     const funcionario = new Funcionario();
@@ -288,5 +284,4 @@ export default class FuncionarioCTRL {
         });
     }
   }
-
 }

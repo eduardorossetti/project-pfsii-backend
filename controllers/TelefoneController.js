@@ -4,18 +4,17 @@ export default class TelefoneCTRL {
   gravar(req, res) {
     res.type("application/json");
     if (req.method === "POST" && req.is("application/json")) {
-      const { numero, pessoaId } = req.body;
+      const { numeros, pessoaId } = req.body;
 
-      if (numero && pessoaId) {
-        const telefone = new Telefone(null, numero, pessoaId);
+      if (numeros && pessoaId) {
+        const telefone = new Telefone(null, numeros, pessoaId);
 
         telefone
           .gravar()
-          .then((lastInsertedId) => {
+          .then(() => {
             res.status(200).json({
               status: true,
               message: "Dados gravados com sucesso!",
-              id: lastInsertedId,
             });
           })
           .catch((erro) => {
@@ -42,10 +41,12 @@ export default class TelefoneCTRL {
   atualizar(req, res) {
     res.type("application/json");
     if (req.method === "PUT" && req.is("application/json")) {
-      const { codigo, numero, pessoaId } = req.body;
+      console.log(req.body);
+      
+      const { numeros, pessoaId } = req.body;
 
-      if (codigo && numero && pessoaId) {
-        const telefone = new Telefone(codigo, numero, pessoaId);
+      if (numeros && pessoaId) {
+        const telefone = new Telefone(null, numeros, pessoaId);
         telefone
           .atualizar()
           .then(() => {
@@ -76,8 +77,8 @@ export default class TelefoneCTRL {
   }
 
   excluir(req, res) {
-    const codigo = req.params.codigo;
-    const telefone = new Telefone(codigo);
+    const codigo = req.params.pessoaId;
+    const telefone = new Telefone(null, null, codigo);
 
     telefone
       .excluir()
@@ -115,6 +116,34 @@ export default class TelefoneCTRL {
         status: false,
         message: "Método não permitido! Consulte a documentação da API.",
       });
+    }
+  }
+
+  consultarPorPessoa(req, res) {
+    res.type("application/json");
+    if (req.method === "GET") {
+      const pessoaId = req.params.pessoaId;
+
+      if (pessoaId) {
+        const telefone = new Telefone(null, null, pessoaId);
+
+        telefone
+          .consultarPorPessoa()
+          .then((fone) => {
+            res.status(200).json(fone);
+          })
+          .catch((erro) => {
+            res.status(500).json({
+              status: false,
+              message: erro.message,
+            });
+          });
+      } else {
+        res.status(400).json({
+          status: false,
+          message: "Método não permitido! Consulte a documentação da API.",
+        });
+      }
     }
   }
 }

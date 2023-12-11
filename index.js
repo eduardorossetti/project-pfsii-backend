@@ -3,6 +3,7 @@ import rotaFuncionario from "./routes/FuncionarioRoutes.js";
 import rotaCargo from "./routes/CargoRoutes.js";
 import cors from "cors";
 import rotaDepartamento from "./routes/DepartamentoRoutes.js";
+import rotaTelefone from "./routes/TelefoneRoutes.js";
 
 const app = express();
 
@@ -13,7 +14,8 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/funcionarios", rotaFuncionario);
 app.use("/cargos", rotaCargo);
-app.use("/departamentos", rotaDepartamento)
+app.use("/departamentos", rotaDepartamento);
+app.use("/telefones", rotaTelefone);
 
 const door = 4010;
 const hostname = "0.0.0.0";

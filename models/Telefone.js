@@ -1,3 +1,5 @@
+import TelefoneBD from "../repositories/TelefoneDAO.js";
+
 class Telefone {
   #codigo;
   #numero;
@@ -38,25 +40,30 @@ class Telefone {
   }
 
   async gravar() {
-    const funcionarioBD = new FuncionarioBD();
-    const lastInsertedId = await funcionarioBD.gravar(this);
-    return lastInsertedId;
+    const telefoneBD = new TelefoneBD();
+    await telefoneBD.gravar(this);
   }
 
   async atualizar() {
-    const funcionarioBD = new FuncionarioBD();
-    await funcionarioBD.atualizar(this);
+    const telefoneBD = new TelefoneBD();
+    await telefoneBD.atualizar(this);
   }
 
-  async excluir(info) {
-    const funcionarioBD = new FuncionarioBD();
-    await funcionarioBD.excluir(info);
+  async excluir() {
+    const telefoneBD = new TelefoneBD();
+    await telefoneBD.excluir(this);
   }
 
   async consultar() {
-    const funcionarioBD = new FuncionarioBD();
-    const funcionarios = await funcionarioBD.consultar();
-    return funcionarios;
+    const telefoneBD = new TelefoneBD();
+    const telefones = await telefoneBD.consultar();
+    return telefones;
+  }
+
+  async consultarPorPessoa() {
+    const telefoneBD = new TelefoneBD();
+    const telefone = await telefoneBD.consultarPorPessoa(this);
+    return telefone;
   }
 }
 
