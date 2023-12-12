@@ -9,7 +9,6 @@ rotaFuncionario
   .put("/", funcionarioCtrl.atualizar)
   .delete("/:codigo", funcionarioCtrl.excluir)
   .get("/", funcionarioCtrl.consultar)
-  .get("/professores", funcionarioCtrl.consultarProfessores)
   .get("/:codigo", funcionarioCtrl.obterFuncionario)
   .get("/:codigo/atribuicao", funcionarioCtrl.obterAtribuicoes);
 

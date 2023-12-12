@@ -243,24 +243,6 @@ export default class FuncionarioBD {
     return funcionarios;
   }
 
-  async consultarProfessores() {
-    const conexao = await conectar();
-
-    const sql = `SELECT f.* FROM funcionario f
-                  JOIN atribuicao a ON f.codigo = a.funcionario_codigo
-                  JOIN cargo c ON a.cargo_codigo = c.codigo
-                WHERE c.nome = "PROFESSOR"`;
-
-    const [rows] = await conexao.query(sql);
-    const funcionarios = [];
-
-    for (const row of rows) {
-      const funcionario = new Funcionario(row["codigo"], row["nome"]);
-      funcionarios.push(funcionario);
-    }
-    return funcionarios;
-  }
-
   async obterFuncionario(codigo) {
     const conexao = await conectar();
 

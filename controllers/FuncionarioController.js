@@ -221,29 +221,6 @@ export default class FuncionarioCTRL {
     }
   }
 
-  consultarProfessores(req, res) {
-    res.type("application/json");
-    if (req.method === "GET") {
-      const funcionario = new Funcionario();
-      funcionario
-        .consultarProfessores()
-        .then((funcionarios) => {
-          res.status(200).json(funcionarios);
-        })
-        .catch((erro) => {
-          res.status(500).json({
-            status: false,
-            message: erro.message,
-          });
-        });
-    } else {
-      res.status(400).json({
-        status: false,
-        message: "Método não permitido! Consulte a documentação da API",
-      });
-    }
-  }
-
   obterFuncionario(req, res) {
     res.type("application/json");
     if (req.method === "GET") {
@@ -267,6 +244,7 @@ export default class FuncionarioCTRL {
       });
     }
   }
+
   obterAtribuicoes(req, res) {
     res.type("application/json");
     if (req.method === "GET") {

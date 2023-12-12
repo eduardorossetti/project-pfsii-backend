@@ -136,12 +136,6 @@ export default class Funcionario {
     return funcionarios;
   }
 
-  async consultarProfessores() {
-    const funcionarioBD = new FuncionarioBD();
-    const funcionarios = await funcionarioBD.consultarProfessores();
-    return funcionarios;
-  }
-
   async obterFuncionario(codigo) {
     const funcionarioBD = new FuncionarioBD();
     const funcionarios = await funcionarioBD.obterFuncionario(codigo);
